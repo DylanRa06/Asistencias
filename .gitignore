@@ -46,3 +46,10 @@ target/
 Thumbs.db
 
 
+
+# Archivos locales del proyecto
+target/
+.classpath
+.project
+.settings/
+*.log

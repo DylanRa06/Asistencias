@@ -1,0 +1,452 @@
+{
+  "info": {
+    "name": "Asistencias - Taller Spring Boot REST",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Iniciar la aplicacion con la lista vacia y ejecutar las peticiones en orden. Crear, actualizar y eliminar retornan HTTP 200 sin cuerpo porque los metodos del taller son void. Registrar asistencia no necesita Body. Los registros se guardan en memoria."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Crear estudiante",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/estudiantes",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cedula\": \"123\",\n  \"nombre\": \"Dylan\",\n  \"apellido\": \"Ramon\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.text().trim()).to.eql(\"\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Consultar estudiante",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/estudiantes/123"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.json()).to.deep.equal({\"cedula\": \"123\", \"nombre\": \"Dylan\", \"apellido\": \"Ramon\"}); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Rechazar duplicado",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/estudiantes",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cedula\": \"123\",\n  \"nombre\": \"Repetido\",\n  \"apellido\": \"Ramon\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.text().trim()).to.eql(\"\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Comprobar duplicado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/estudiantes"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { const lista = pm.response.json().filter(e => e.cedula === \"123\"); pm.expect(lista.length).to.eql(1); pm.expect(lista[0].nombre).to.eql(\"Dylan\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Crear segundo estudiante",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/estudiantes",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cedula\": \"456\",\n  \"nombre\": \"Ana\",\n  \"apellido\": \"Perez\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.text().trim()).to.eql(\"\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Actualizar estudiante",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/estudiantes/123",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cedula\": \"123\",\n  \"nombre\": \"Dylan Paul\",\n  \"apellido\": \"Ramon\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.text().trim()).to.eql(\"\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Comprobar actualizacion",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/estudiantes/123"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.json().nombre).to.eql(\"Dylan Paul\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Registrar primera asistencia",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/123"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { const r = pm.response.json(); pm.expect(r.estudiante.cedula).to.eql(\"123\"); pm.expect(r.asistencia.estado).to.eql(\"P\"); pm.expect(r.asistencia.fechaClase).to.match(/^\\d{4}-\\d{2}-\\d{2}$/); pm.expect(r.asistencia.fechaHoraRegistro).to.include(\"T\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Registrar segunda asistencia",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/123"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.json().asistencia.estado).to.eql(\"P\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Consultar asistencias",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/123"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.json().length).to.eql(2); pm.expect(pm.response.json().every(a => a.estado === \"P\")).to.eql(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Segundo estudiante sin asistencias",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/456"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.json()).to.deep.equal([]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. Registrar asistencia del segundo",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/456"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.json().estudiante.cedula).to.eql(\"456\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13. Consultar solo asistencias del segundo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/456"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.json().length).to.eql(1); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14. Estudiante inexistente",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.text().trim()).to.be.oneOf([\"\", \"null\"]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15. Consulta inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.json()).to.deep.equal([]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16. Eliminar estudiante",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/estudiantes/123"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.text().trim()).to.eql(\"\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "17. Verificar eliminacion",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/estudiantes"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { const lista = pm.response.json(); pm.expect(lista.some(e => e.cedula === \"123\")).to.eql(false); pm.expect(lista.some(e => e.cedula === \"456\")).to.eql(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "18. No registrar asistencia del eliminado",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/123"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.text().trim()).to.be.oneOf([\"\", \"null\"]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "19. Conservar historial registrado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/asistencias/123"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Resultado esperado\", () => { pm.expect(pm.response.json().length).to.eql(2); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
